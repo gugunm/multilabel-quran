@@ -1,0 +1,67 @@
+import gspread
+import gspread_dataframe as gd
+from oauth2client.service_account import ServiceAccountCredentials
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
+# Initialize for preprocessing
+wordnet_lemmatizer = WordNetLemmatizer()    # lemmatization
+tokenizer = RegexpTokenizer(r'\w+')         # remove punctuatuion
+
+def cleaningData(sentence):
+    lowcase_word = sentence.lower()                                                     # lowcase a sentence
+    tokens = tokenizer.tokenize(lowcase_word)                                       # tokenize a sentence
+    filtered_words = [w for w in tokens if not w in stopwords.words('english')]     # remove Stopwords
+    output = []
+    for word in filtered_words:
+        #output.append(PorterStemmer().stem(word))                                   # if you wanna use only stemming
+        output.append(wordnet_lemmatizer.lemmatize(word))                            # if you wanna use only lemmatization
+    return output
+
+def credentialGoogle():
+    # Authentication GDrive and GSheet
+    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('../../tesis-gugunm-f0d88704925a.json', scope)
+    gClient = gspread.authorize(creds)
+    return gClient
+
+def getWorksheet(gClient, fileName, sheetName):
+    # Get file sheet
+    spreadSheet = gClient.open(fileName)
+    # Take worksheet
+    return spreadSheet.worksheet(sheetName)
+
+if __name__ == '__main__':
+    # get creds
+    gClient = credentialGoogle()
+    # file sheet name
+    fileName = "dataset-quran"
+    # Take real (before process) all data using pandas
+    real_sheet = getWorksheet(gClient, fileName, "real-data")
+    # Take a proceed sheet
+    proc_sheet = getWorksheet(gClient, fileName, "proceed-data")
+    
+    # Take a Data to be proccess
+    data_df = gd.get_as_dataframe(real_sheet)
+    ayat_df = data_df.iloc[:,3]
+    
+    # Preprocessing data ayat
+    for idx in ayat_df.index:
+        ayat = ayat_df[idx]
+        ayat_df[idx] = cleaningData(ayat)     # replace data to be tokenization result
+    
+    # Real data Already proceed then store in sheet "proceed-data" 
+    gd.set_with_dataframe(proc_sheet, data_df)
+
+
+
+
+
+
+
+
+
+
+
+
+
