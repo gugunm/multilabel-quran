@@ -1,8 +1,16 @@
-import gspread
+# -*- coding: utf-8 -*-
+import sys
+# import func from another file in other directory
+sys.path.insert(1, '../preparation/')
+# credential for GDrive and GSheet
+import credentials as creds 
+# convert google sheet to dataframe
 import gspread_dataframe as gd
-from oauth2client.service_account import ServiceAccountCredentials
+# lib for lemmatization
 from nltk.stem import PorterStemmer, WordNetLemmatizer
+# dict for stopword in english
 from nltk.corpus import stopwords
+# for tokenize and remove punctuation
 from nltk.tokenize import RegexpTokenizer
 # Initialize for preprocessing
 wordnet_lemmatizer = WordNetLemmatizer()    # lemmatization
@@ -18,28 +26,15 @@ def cleaningData(sentence):
         output.append(wordnet_lemmatizer.lemmatize(word))                            # if you wanna use only lemmatization
     return output
 
-def credentialGoogle():
-    # Authentication GDrive and GSheet
-    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('../../tesis-gugunm-f0d88704925a.json', scope)
-    gClient = gspread.authorize(creds)
-    return gClient
-
-def getWorksheet(gClient, fileName, sheetName):
-    # Get file sheet
-    spreadSheet = gClient.open(fileName)
-    # Take worksheet
-    return spreadSheet.worksheet(sheetName)
-
 if __name__ == '__main__':
     # get creds
-    gClient = credentialGoogle()
+    gClient = creds.credentialGoogle()
     # file sheet name
     fileName = "dataset-quran"
     # Take real (before process) all data using pandas
-    real_sheet = getWorksheet(gClient, fileName, "real-data")
+    real_sheet = creds.getWorksheet(gClient, fileName, "real-data")
     # Take a proceed sheet
-    proc_sheet = getWorksheet(gClient, fileName, "proceed-data")
+    proc_sheet = creds.getWorksheet(gClient, fileName, "proceed-data")
     
     # Take a Data to be proccess
     data_df = gd.get_as_dataframe(real_sheet)
