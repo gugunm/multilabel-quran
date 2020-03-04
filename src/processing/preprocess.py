@@ -26,7 +26,7 @@ def cleaningData(sentence):
         output.append(wordnet_lemmatizer.lemmatize(word))                            # if you wanna use only lemmatization
     return output
 
-if __name__ == '__main__':
+def mainPreprocessing():
     # get creds
     gClient = creds.credentialGoogle()
     # file sheet name
@@ -35,18 +35,18 @@ if __name__ == '__main__':
     real_sheet = creds.getWorksheet(gClient, fileName, "real-data")
     # Take a proceed sheet
     proc_sheet = creds.getWorksheet(gClient, fileName, "proceed-data")
-    
     # Take a Data to be proccess
     data_df = gd.get_as_dataframe(real_sheet)
-    ayat_df = data_df.iloc[:,3]
-    
+    ayat_df = data_df.iloc[:,3]   
     # Preprocessing data ayat
     for idx in ayat_df.index:
         ayat = ayat_df[idx]
         ayat_df[idx] = cleaningData(ayat)     # replace data to be tokenization result
-    
     # Real data Already proceed then store in sheet "proceed-data" 
     gd.set_with_dataframe(proc_sheet, data_df)
+
+if __name__ == '__main__':
+    mainPreprocessing()
 
 
 

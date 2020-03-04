@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import wikipedia
 import wikipediaapi
@@ -9,10 +10,12 @@ def getPageNameList(someWord):
         try:
             wikipedia.page(title)
             titleList.append(title)
-        except wikipedia.exceptions.DisambiguationError as e:
-            for disamTitle in e.options:
-                if ('disambiguation' not in disamTitle.lower()):
-                    titleList.append(disamTitle)
+        except wikipedia.exceptions.DisambiguationError: # as e:
+            continue
+            # CUKUP LEVEL 1 AJA
+            #for disamTitle in e.options:
+            #    if ('disambiguation' not in disamTitle.lower()):
+            #        titleList.append(disamTitle)
         except wikipedia.exceptions.PageError:
             continue
     return titleList
@@ -27,12 +30,12 @@ def createDir(dirName, path= "../../data/wiki/"):
         return str(path+dirName)
 
 def saveSummaryToTxt(title, summary, pathDir):
-    fileName = open(pathDir+"/"+str(title)+".txt", "w")
-    print(fileName)
+    # di encoding='utf-8' biar semua format str bisa di masukin ke file
+    fileName = open(pathDir+"/"+str(title)+".txt", "w+", encoding='utf-8')
     fileName.write(summary)
     fileName.close()
 
-def getSummaryPageTitle(someWord):
+def mainWikipedia(someWord):
     # Create dir for someWord
     pathDir = createDir(someWord)
     # get list of page related to someWord
@@ -41,12 +44,19 @@ def getSummaryPageTitle(someWord):
     titleList = list(dict.fromkeys(titleList))
     for t in titleList:
         try:
-            wiki     = wikipediaapi.Wikipedia('en')
-            summaryPage = wiki.page(t).summary
-            if summaryPage != None:
+            wiki = wikipediaapi.Wikipedia('en')
+            summaryPage = wiki.page(t).text
+            #print(len(summaryPage), " -- Type : ", type(summaryPage), " -- Titile : ", t, "\n", summaryPage)
+            if summaryPage:
                 saveSummaryToTxt(t, summaryPage, pathDir)
         except:
             continue
 
 if __name__ == '__main__':
-    getSummaryPageTitle("adiwijaya")
+    mainWikipedia("allah")
+
+
+
+
+
+
