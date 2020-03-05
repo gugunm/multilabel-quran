@@ -9,15 +9,6 @@ import gspread_dataframe as gd
 # k-fold cross validation
 from sklearn.model_selection import KFold
 
-def getCleanData(fileName, worksheetName):
-    # get the credentials
-    gClient = creds.credentialGoogle()
-    # take worksheet 
-    proc_sheet = creds.getWorksheet(gClient, fileName, worksheetName)
-    # Take a Data to be proccess
-    data_df = gd.get_as_dataframe(proc_sheet)
-    return data_df
-
 def crossValidation(df):
     # initiation for kfold array
     foldList = []
@@ -35,7 +26,7 @@ def mainCrossValidation():
     fileName = "dataset-quran"
     # worksheet name
     worksheetName = "proceed-data"
-    df = getCleanData(fileName, worksheetName).iloc[:,3:]
+    df = creds.getAsDataframe(fileName, worksheetName).iloc[:,3:]
     return crossValidation(df)
 
 if __name__ == '__main__':

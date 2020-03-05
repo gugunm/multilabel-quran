@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
+import warnings
+warnings.filterwarnings("ignore")
+# import func from another file in other directory
+sys.path.insert(1, '../processing/')
+# import get unique words
+import feature_lesk as fl
 import wikipedia
 import wikipediaapi
 
@@ -35,7 +42,8 @@ def saveSummaryToTxt(title, summary, pathDir):
     fileName.write(summary)
     fileName.close()
 
-def mainWikipedia(someWord):
+
+def getArticleByWord(someWord):
     # Create dir for someWord
     pathDir = createDir(someWord)
     # get list of page related to someWord
@@ -52,8 +60,19 @@ def mainWikipedia(someWord):
         except:
             continue
 
+def collectWikiArticle(uWords):
+    for i, word in enumerate(uWords):
+        # get a wikipedia page per term
+        getArticleByWord(word)
+        print(i+290, ". {} - created.".format(word))
+
 if __name__ == '__main__':
-    mainWikipedia("allah")
+    dfUWords = fl.getUniqueWords()
+    # Sampe ayat ke 50 dulu unique wordnya
+    listTerms = dfUWords.iloc[290:,0].values
+    
+    collectWikiArticle(listTerms)
+    
 
 
 

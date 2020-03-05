@@ -7,7 +7,7 @@ import credentials as creds
 # convert google sheet to dataframe
 import gspread_dataframe as gd
 # lib for lemmatization
-from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer #, PorterStemmer
 # dict for stopword in english
 from nltk.corpus import stopwords
 # for tokenize and remove punctuation
