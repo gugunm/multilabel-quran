@@ -4,8 +4,6 @@ import sys
 sys.path.insert(1, '../preparation/')
 # credential for GDrive and GSheet
 import credentials as creds 
-# convert google sheet to dataframe
-import gspread_dataframe as gd
 # k-fold cross validation
 from sklearn.model_selection import KFold
 

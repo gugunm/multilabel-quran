@@ -43,36 +43,52 @@ def saveSummaryToTxt(title, summary, pathDir):
     fileName.close()
 
 
-def getArticleByWord(someWord):
-    # Create dir for someWord
-    pathDir = createDir(someWord)
-    # get list of page related to someWord
-    titleList = getPageNameList(someWord)
-    # Remove duplicate page title in list
-    titleList = list(dict.fromkeys(titleList))
-    for t in titleList:
-        try:
-            wiki = wikipediaapi.Wikipedia('en')
-            summaryPage = wiki.page(t).text
-            #print(len(summaryPage), " -- Type : ", type(summaryPage), " -- Titile : ", t, "\n", summaryPage)
-            if summaryPage:
-                saveSummaryToTxt(t, summaryPage, pathDir)
-        except:
-            continue
+def getArticleByWord(someWord, errwords):
+    try:
+        # Create dir for someWord
+        pathDir = createDir(someWord)
+        # get list of page related to someWord
+        titleList = getPageNameList(someWord)
+        # Remove duplicate page title in list
+        titleList = list(dict.fromkeys(titleList))
+        for t in titleList:
+            try:
+                wiki = wikipediaapi.Wikipedia('en')
+                summaryPage = wiki.page(t).text
+                #print(len(summaryPage), " -- Type : ", type(summaryPage), " -- Titile : ", t, "\n", summaryPage)
+                if summaryPage:
+                    saveSummaryToTxt(t, summaryPage, pathDir)
+            except:
+                continue
+    except:
+        errwords.write(someWord+"\n")
+        
 
-def collectWikiArticle(uWords):
+def collectWikiArticle(uWords, start, end):
+    errwords = open("../../data/raw/errorWords("+str(start)+"-"+str(end)+").txt", "w+", encoding='utf-8')
     for i, word in enumerate(uWords):
         # get a wikipedia page per term
-        getArticleByWord(word)
-        print(i+290, ". {} - created.".format(word))
+        getArticleByWord(word, errwords)
+        print(i+354, ". {} - created.".format(word))
+    errwords.close()
 
 if __name__ == '__main__':
     dfUWords = fl.getUniqueWords()
     # Sampe ayat ke 50 dulu unique wordnya
-    listTerms = dfUWords.iloc[290:,0].values
-    
-    collectWikiArticle(listTerms)
-    
+    listTerms = dfUWords.iloc[354:451,0].values
+    collectWikiArticle(listTerms, 354, 451)
+    print("======== Batas 1 =======")
+    listTerms = dfUWords.iloc[451:551,0].values
+    collectWikiArticle(listTerms, 451, 551)
+    print("======== Batas 2 =======")
+    listTerms = dfUWords.iloc[551:651,0].values
+    collectWikiArticle(listTerms, 551, 651)
+    print("======== Batas 3 =======")
+    listTerms = dfUWords.iloc[651:751,0].values
+    collectWikiArticle(listTerms, 651, 751)
+    print("======== Batas 4 =======")
+
+
 
 
 
