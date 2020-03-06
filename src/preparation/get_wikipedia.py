@@ -76,8 +76,8 @@ if __name__ == '__main__':
     # getArticleByWord()
     dfUWords = fl.getUniqueWords()
     # Sampe ayat ke 50 dulu unique wordnya
-    listTerms = dfUWords.iloc[651:751,0].values
-    collectWikiArticle(listTerms, 651, 751)
+    listTerms = dfUWords.iloc[1051:1151,0].values
+    collectWikiArticle(listTerms, 1051, 1151)
     print("======== Batas 4 =======")
 
 
