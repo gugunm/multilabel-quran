@@ -25,12 +25,15 @@ def createUniqueWords(fileName="dataset-quran",
                 uWords.append(term)
     dfUWords = pd.DataFrame(uWords, columns=["terms"])
     # Real data Already proceed then store in sheet "proceed-data" 
-    gd.set_with_dataframe(wsUniqueWords, dfUWords)
+    gd.set_with_dataframe(wsUniqueWords, dfUWords, allow_formulas=False)
     return dfUWords
 
 def getUniqueWords(fileName = "dataset-quran", wsNameUniqueWords = "unique-words"):
     wsUniqueWords = creds.getWorksheet(creds.credentialGoogle(), fileName, wsNameUniqueWords)
     dfUWords = gd.get_as_dataframe(wsUniqueWords, usecols=[0])
+    # Convert word false and true as str
+    booldict = {True: 'true', False: 'false'}
+    dfUWords = dfUWords.replace(booldict) 
     return dfUWords
 
 #def mainLeskAlgorithm():
@@ -41,7 +44,10 @@ def getUniqueWords(fileName = "dataset-quran", wsNameUniqueWords = "unique-words
     #df = createUniqueWords()
     
     # Get unique words from google sheet
-    #print(getUniqueWords())
+#    df = getUniqueWords()
+#    for val in df.iloc[:,0].values:
+#        if val == True:
+#            print(val)
     
     
     

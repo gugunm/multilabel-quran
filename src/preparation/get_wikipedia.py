@@ -69,21 +69,13 @@ def collectWikiArticle(uWords, start, end):
     for i, word in enumerate(uWords):
         # get a wikipedia page per term
         getArticleByWord(word, errwords)
-        print(i+354, ". {} - created.".format(word))
+        print(i+start, ". {} - created.".format(word))
     errwords.close()
 
 if __name__ == '__main__':
+    # getArticleByWord()
     dfUWords = fl.getUniqueWords()
     # Sampe ayat ke 50 dulu unique wordnya
-    listTerms = dfUWords.iloc[354:451,0].values
-    collectWikiArticle(listTerms, 354, 451)
-    print("======== Batas 1 =======")
-    listTerms = dfUWords.iloc[451:551,0].values
-    collectWikiArticle(listTerms, 451, 551)
-    print("======== Batas 2 =======")
-    listTerms = dfUWords.iloc[551:651,0].values
-    collectWikiArticle(listTerms, 551, 651)
-    print("======== Batas 3 =======")
     listTerms = dfUWords.iloc[651:751,0].values
     collectWikiArticle(listTerms, 651, 751)
     print("======== Batas 4 =======")
